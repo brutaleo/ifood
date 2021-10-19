@@ -25,7 +25,7 @@ public class CadastroTestLifeCycleManager implements QuarkusTestResourceLifecycl
 
     @Override
     public void stop() {
-        if (POSTGRES != null && POSTGRES.isRunning()) {
+        if (POSTGRES.isRunning()) {
             POSTGRES.stop();
         }
 
