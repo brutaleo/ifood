@@ -8,12 +8,17 @@ import com.github.brutaleo.ifood.cadastro.dto.PratoDTO;
 import com.github.brutaleo.ifood.cadastro.dto.PratoMapper;
 import com.github.brutaleo.ifood.cadastro.dto.RestauranteDTO;
 import com.github.brutaleo.ifood.cadastro.dto.RestauranteMapper;
+import com.github.brutaleo.ifood.cadastro.infra.ConstraintViolationResponse;
 import com.github.brutaleo.ifood.cadastro.model.Prato;
 import com.github.brutaleo.ifood.cadastro.model.Restaurante;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -51,7 +56,9 @@ public class RestauranteResource {
 
     @POST
     @Transactional
-    public Response adicionarRestaurante(AdicionarRestauranteDTO dto) {
+    @APIResponse(responseCode = "400", content = @Content(schema = @Schema(allOf = ConstraintViolationResponse.class)))
+    @APIResponse(responseCode = "201", description = "Caso o Restaurante seja cadastrado com sucesso.")
+    public Response adicionarRestaurante(@Valid AdicionarRestauranteDTO dto) {
         Restaurante restaurante = restauranteMapper.toRestaurante(dto);
         restaurante.persist();
 
