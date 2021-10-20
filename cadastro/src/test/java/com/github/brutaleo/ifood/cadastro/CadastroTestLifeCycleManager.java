@@ -1,4 +1,4 @@
-package com.github.brutaleo.ifood;
+package com.github.brutaleo.ifood.cadastro;
 
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -25,7 +25,7 @@ public class CadastroTestLifeCycleManager implements QuarkusTestResourceLifecycl
 
     @Override
     public void stop() {
-        if (POSTGRES.isRunning()) {
+        if (POSTGRES != null && POSTGRES.isRunning()) {
             POSTGRES.stop();
         }
 

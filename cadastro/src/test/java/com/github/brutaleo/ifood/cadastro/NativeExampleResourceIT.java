@@ -1,4 +1,4 @@
-package com.github.brutaleo.ifood;
+package com.github.brutaleo.ifood.cadastro;
 
 import io.quarkus.test.junit.NativeImageTest;
 

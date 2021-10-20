@@ -8,3 +8,11 @@ services:
       POSTGRES_PASSWORD: cadastro
     ports:
       - "5432:5432"
+  Keycloak_ifood:
+    container_name: Keycloak_ifood
+    image: quay.io/keycloak/keycloak:15.0.2
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "8180:8080"
