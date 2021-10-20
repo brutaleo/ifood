@@ -53,10 +53,10 @@ import java.util.stream.Stream;
         type = SecuritySchemeType.OAUTH2,
         flows = @OAuthFlows(
                 password = @OAuthFlow(
-                        tokenUrl = "http://localhost:8280/auth/realms/ifood/protocol/openid-connect/token")
+                        tokenUrl = "http://localhost:8180/auth/realms/ifood/protocol/openid-connect/token")
         )
 )
-@SecurityRequirement(name = "ifood-oauth", scopes = {})
+@SecurityRequirement(name = "ifood-oauth", scopes = {})//pode ser utilizado a nível de método também.
 public class RestauranteResource {
 
     @Inject

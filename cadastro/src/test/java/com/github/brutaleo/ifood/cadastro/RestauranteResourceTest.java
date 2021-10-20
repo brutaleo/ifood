@@ -30,11 +30,12 @@ public class RestauranteResourceTest {
     private String token;
 
     @BeforeEach
-    public void gereToken() throws Exception {
+    public void gerarToken() throws Exception {
         token = TokenUtils.generateTokenString("/JWTProprietarioClaims.json", null);
+
     }
 
-    //utilizar o given do RestAssured sem definir o tipo de conteúdo gera um erro.
+    //utilizar o given do RestAssured sem definir o tipo do conteúdo gera um erro.
     private RequestSpecification given() {
         return RestAssured
                 .given()
