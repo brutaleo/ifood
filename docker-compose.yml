@@ -1,8 +1,24 @@
-version: "3.9"
+version: "3.7"
+
+volumes:
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
+  db:
+    driver: bridge
+
 services:
   postgres_cadastro:
     container_name: postgres_cadastro_ifood
     image: postgres:12.2
+    networks:
+      - db
     environment:
       POSTGRES_USER: cadastro
       POSTGRES_PASSWORD: cadastro
@@ -11,6 +27,9 @@ services:
   Keycloak_ifood:
     container_name: Keycloak_ifood
     image: quay.io/keycloak/keycloak:15.0.2
+    networks:
+      - public
+      - db
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
@@ -19,6 +38,8 @@ services:
   jaeger_ifood:
     container_name: jaeger_ifood
     image: jaegertracing/all-in-one:1.27
+    networks:
+      - private
     ports:
       - "5775:5775/udp"
       - "6831:6831/udp"
@@ -28,3 +49,33 @@ services:
       - "14268:14268"
       - "14250:14250"
       - "9411:9411"
+
+  prometheus_ifood:
+#    image: prom/prometheus:v2.30.3
+    image: prometheus-ifood
+    container_name: prometheus_ifood
+#    extra_hosts:
+#      - "host.docker.internal:10.0.2.2"
+    networks:
+      - default
+      - private
+    volumes:
+#      - /etc/prometheus:/config
+      - prometheus-data:/prometheus
+#    command: --config.file=/config/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
+
+  grafana_ifood:
+    image: grafana/grafana:6.5.0
+    container_name: grafana_ifood
+    networks:
+      - private
+      - public
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    restart: always
+

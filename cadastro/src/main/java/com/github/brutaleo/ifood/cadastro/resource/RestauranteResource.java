@@ -11,6 +11,10 @@ import com.github.brutaleo.ifood.cadastro.dto.RestauranteMapper;
 import com.github.brutaleo.ifood.cadastro.infra.ConstraintViolationResponse;
 import com.github.brutaleo.ifood.cadastro.model.Prato;
 import com.github.brutaleo.ifood.cadastro.model.Restaurante;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.SimplyTimed;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -65,6 +69,9 @@ public class RestauranteResource {
     PratoMapper pratoMapper;
 
     @GET
+    @Counted(name= "Quantidade buscas Restaurantes", description = "Quantos métodos get estão sendo acionados.")
+    @SimplyTimed(name = "Tempo medio de execuções", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "Tempo completo de busca", description = "Quanto tempo leva para realizar uma tarefa.", unit = MetricUnits.MILLISECONDS)
     public List<RestauranteDTO> listarRestaurante() {
         Stream<Restaurante> restaurantes = Restaurante.streamAll();
         return restaurantes.map(r -> restauranteMapper.toRestauranteDTO(r)).collect(Collectors.toList());
