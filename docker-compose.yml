@@ -24,6 +24,16 @@ services:
       POSTGRES_PASSWORD: cadastro
     ports:
       - "5432:5432"
+  postgres_marketplace:
+    container_name: postgres_marketplace_ifood
+    image: postgres:12.2
+    networks:
+      - db
+    environment:
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: marketplace
+    ports:
+      - "5433:5432"
   Keycloak_ifood:
     container_name: Keycloak_ifood
     image: quay.io/keycloak/keycloak:15.0.2
