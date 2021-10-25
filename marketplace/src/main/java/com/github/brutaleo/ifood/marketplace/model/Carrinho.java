@@ -1,4 +1,4 @@
-package com.github.brutaleo.ifood.model;
+package com.github.brutaleo.ifood.marketplace.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 

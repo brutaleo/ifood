@@ -1,4 +1,4 @@
-package com.github.brutaleo.ifood.model;
+package com.github.brutaleo.ifood.marketplace.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 
@@ -7,31 +7,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+
 @Entity
-@Table(name = "prato")
-public class Prato extends PanacheEntityBase {
+@Table(name = "localizacao")
+public class Localizacao extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    public String nome;
+    public Double latitude;
 
-    public String descricao;
-
-    public BigDecimal preco;
-
-    @ManyToOne
-    @JoinColumn(name = "restaurante_id")
-    public Restaurante restaurante;
-
-    public Restaurante getRestaurante() {
-        return restaurante;
-    }
+    public Double longitude;
 
     public Long getId() {
         return id;
@@ -40,4 +28,5 @@ public class Prato extends PanacheEntityBase {
     public void setId(Long id) {
         this.id = id;
     }
+
 }
