@@ -2,7 +2,6 @@ package com.github.brutaleo.ifood.marketplace.service;
 
 import com.github.brutaleo.ifood.marketplace.dto.PratoDTO;
 import com.github.brutaleo.ifood.marketplace.dto.PratoMapper;
-import com.github.brutaleo.ifood.marketplace.model.Prato;
 import com.github.brutaleo.ifood.marketplace.repository.PratoRepository;
 import io.smallrye.mutiny.Uni;
 
@@ -21,5 +20,12 @@ public class PratoService {
     }
     public Uni<List<PratoDTO>> findAll() {
         return pratoRepository.listAll().map(pratoMapper::toDTOList);
+    }
+
+    public Uni<List<PratoDTO>> findByRestaurante(Long restaurante_id) {
+
+        return pratoRepository
+                .list("#Prato.getByRestauranteId", restaurante_id)
+                .map(pratoMapper::toDTOList);
     }
 }

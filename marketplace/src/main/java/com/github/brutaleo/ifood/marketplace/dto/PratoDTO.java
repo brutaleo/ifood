@@ -10,4 +10,6 @@ public class PratoDTO {
     public String descricao;
 
     public BigDecimal preco;
+
+    public RestauranteDTO restaurante;
 }

@@ -6,5 +6,6 @@ import io.quarkus.hibernate.reactive.panache.PanacheRepositoryBase;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class PratoRepository implements PanacheRepositoryBase<Prato, Integer> {
+public class PratoRepository implements PanacheRepositoryBase<Prato, Long> {
+
 }

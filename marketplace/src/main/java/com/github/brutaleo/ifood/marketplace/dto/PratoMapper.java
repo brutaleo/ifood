@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "cdi")
 public interface PratoMapper {
+
     PratoDTO toDTO(Prato prato);
     Prato toPrato(PratoDTO dto);
 
