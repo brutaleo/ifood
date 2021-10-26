@@ -1,4 +1,4 @@
-package com.github.brutaleo.ifood.util;
+package com.github.brutaleo.ifood.marketplace.util;
 
 import io.quarkus.runtime.StartupEvent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;

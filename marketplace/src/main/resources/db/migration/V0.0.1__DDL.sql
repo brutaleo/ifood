@@ -41,15 +41,26 @@ ALTER TABLE public.prato
     ADD CONSTRAINT fk43yo4ddilkvn6ebgfcx2vnqs7 FOREIGN KEY (restaurante_id) REFERENCES restaurante (id);
 
 INSERT INTO localizacao (id, latitude, longitude)
-VALUES (1000, -15.817759, -47.836959);
+VALUES (1, -15.817759, -47.836959);
+
+INSERT INTO localizacao (id, latitude, longitude)
+VALUES (2, -15.817759, -47.836959);
 
 INSERT INTO restaurante (id, localizacao_id, nome)
-VALUES (999, 1000, 'Manguai');
+VALUES (1, 1, 'Barriguinha Cheia e Feliz');
+
+INSERT INTO restaurante (id, localizacao_id, nome)
+VALUES (2, 2, 'Quitanda do Gerson');
 
 INSERT INTO prato
     (id, nome, descricao, restaurante_id, preco)
-VALUES (9998, 'Cuscuz com Ovo', 'Bom demais no café da manhã', 999, 3.99);
+VALUES (1, 'Bifinho Gostoso', 'Feito com amor', 1, 15.99);
 
 INSERT INTO prato
     (id, nome, descricao, restaurante_id, preco)
-VALUES (9997, 'Peixe frito', 'Agulhinha frita, excelente com Cerveja', 999, 99.99);
+VALUES (2, 'Peixinho frito com açai', 'Deixa a barrigunha muito mais feliz', 1, 19.99);
+
+INSERT INTO prato
+(id, nome, descricao, restaurante_id, preco)
+VALUES (3, 'Litro do Açai', 'O mais grosso do Guamá', 2, 14.99);
+
