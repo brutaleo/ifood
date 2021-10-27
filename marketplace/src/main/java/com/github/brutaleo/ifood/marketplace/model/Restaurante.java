@@ -1,6 +1,8 @@
 package com.github.brutaleo.ifood.marketplace.model;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Tuple;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,4 +39,41 @@ public class Restaurante extends PanacheEntityBase {
         this.id = id;
     }
 
+    public void persist(PgPool pgPool) {
+
+        pgPool
+                .preparedQuery(
+                        "insert into localizacao (id, latitude, longitude) values ($1, $2, $3)")
+                .execute(
+                        Tuple.of(
+                                localizacao.getId(),
+                                localizacao.latitude,
+                                localizacao.longitude
+                        )
+                )
+                .await()
+                .indefinitely();
+
+        pgPool
+                .preparedQuery(
+                        "insert into restaurante (id, nome, localizacao_id) values ($1, $2, $3)")
+                .execute(
+                        Tuple.of(
+                                id,
+                                nome,
+                                localizacao.getId()
+                        ))
+                .await()
+                .indefinitely();
+
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurante{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", localizacao=" + localizacao +
+                '}';
+    }
 }

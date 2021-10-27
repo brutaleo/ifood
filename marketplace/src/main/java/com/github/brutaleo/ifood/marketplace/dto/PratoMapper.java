@@ -10,11 +10,13 @@ import java.util.stream.Collectors;
 public interface PratoMapper {
 
     PratoDTO toDTO(Prato prato);
+
     Prato toPrato(PratoDTO dto);
 
     default List<PratoDTO> toDTOList(List<Prato> list) {
         return list.stream().map(this::toDTO).collect(Collectors.toList());
     }
+
     default List<Prato> toPratoList(List<PratoDTO> list) {
         return list.stream().map(this::toPrato).collect(Collectors.toList());
     }

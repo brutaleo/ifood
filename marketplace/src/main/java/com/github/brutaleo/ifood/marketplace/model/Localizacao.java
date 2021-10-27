@@ -29,4 +29,12 @@ public class Localizacao extends PanacheEntityBase {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "Localizacao{" +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
