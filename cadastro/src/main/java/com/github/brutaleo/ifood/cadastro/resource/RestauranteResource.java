@@ -24,9 +24,13 @@ import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -67,6 +71,9 @@ public class RestauranteResource {
     RestauranteMapper restauranteMapper;
     @Inject
     PratoMapper pratoMapper;
+    @Inject
+    @Channel("restaurantes-out")
+    Emitter<String> emitter;
 
     @GET
     @Counted(name= "Quantidade buscas Restaurantes", description = "Quantos métodos get estão sendo acionados.")
@@ -84,6 +91,11 @@ public class RestauranteResource {
     public Response adicionarRestaurante(@Valid AdicionarRestauranteDTO dto) {
         Restaurante restaurante = restauranteMapper.toRestaurante(dto);
         restaurante.persist();
+
+        Jsonb create = JsonbBuilder.create();
+        String json = create.toJson(restaurante);
+
+        emitter.send(json);
 
         return Response.status(Status.CREATED).build();
     }
@@ -113,7 +125,6 @@ public class RestauranteResource {
                     throw new NotFoundException("Restaurante não encontrado.");
                 });
     }
-
     //Endpoints de Prato
     @GET
     @Path("{restaurante_id}/pratos")
