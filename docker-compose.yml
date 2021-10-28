@@ -64,8 +64,6 @@ services:
     #    image: prom/prometheus:v2.30.3
     image: prometheus-ifood
     container_name: prometheus_ifood
-    #    extra_hosts:
-    #      - "host.docker.internal:10.0.2.2"
     networks:
       - default
       - private
@@ -99,3 +97,42 @@ services:
     environment:
       ARTEMIS_USERNAME: admin
       ARTEMIS_PASSWORD: admin
+
+  mongodb_ifood:
+    image: mongo:5.0.3-focal
+    container_name: mongodb_ifood
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: pedido
+      MONGO_INITDB_ROOT_PASSWORD: pedido
+      MONGO_INITDB_DATABASE: pedido
+
+  zookepper:
+    image: debezium/zookeeper:1.7.0.Final
+    container_name: zookepper_container
+    ports:
+      - "2181:8181"
+      - "2888:2888"
+      - "3888:3888"
+
+  kafka:
+    image: debezium/kafka:1.7.0.Final
+    container_name: kafka_container
+    ports:
+      - "9092:9092"
+    links:
+      - zookepper
+    environment:
+      - ZOOKEEPER_CONNECT=zookepper:2181
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.28.0-SNAPSHOT
+    container_name: kafdrop_container
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+    ports:
+      - "9000:9000"
+    depends_on:
+      - kafka
+
