@@ -29,12 +29,26 @@ public class PratoResouce {
     }
 
     @GET
-    @APIResponse(responseCode = "200", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = PratoDTO.class)))
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    schema = @Schema(
+                            type = SchemaType.ARRAY,
+                            implementation = PratoDTO.class)
+            )
+    )
     public Uni<Response> listarPrato() {
         return pratoService.findAll().map(prato -> Response.ok(prato).build());
     }
 
-    @APIResponse(responseCode = "200", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = PratoDTO.class)))
+    @APIResponse(
+            responseCode = "200",
+            content = @Content(
+                    schema = @Schema(
+                            type = SchemaType.ARRAY,
+                            implementation = PratoDTO.class)
+            )
+    )
     @GET
     @Path("{restaurante_id}")
     public Uni<Response> listarPratosPorRestaurante(@PathParam("restaurante_id") Long restaurante_id) {

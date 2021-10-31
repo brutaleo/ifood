@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -36,5 +37,16 @@ public class Localizacao extends PanacheEntityBase {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';
+    }
+
+    @OneToOne(mappedBy = "localizacao", optional = false)
+    private Restaurante restaurante;
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 }
