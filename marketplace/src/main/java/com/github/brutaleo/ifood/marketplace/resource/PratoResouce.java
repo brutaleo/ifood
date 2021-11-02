@@ -8,6 +8,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,13 +21,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class PratoResouce {
-
-    private final PratoService pratoService;
-
-    public PratoResouce(PratoService pratoService) {
-        this.pratoService = pratoService;
-
-    }
+    @Inject
+    PratoService pratoService;
 
     @GET
     @APIResponse(

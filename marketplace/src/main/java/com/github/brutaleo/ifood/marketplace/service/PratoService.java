@@ -6,18 +6,16 @@ import com.github.brutaleo.ifood.marketplace.repository.PratoRepository;
 import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
 public class PratoService {
+    @Inject
+    PratoRepository pratoRepository;
+    @Inject
+    PratoMapper pratoMapper;
 
-    private final PratoRepository pratoRepository;
-    private final PratoMapper pratoMapper;
-
-    public PratoService(PratoRepository pratoRepository, PratoMapper pratoMapper) {
-        this.pratoRepository = pratoRepository;
-        this.pratoMapper = pratoMapper;
-    }
     public Uni<List<PratoDTO>> findAll() {
         return pratoRepository.listAll().map(pratoMapper::toDTOList);
     }
@@ -27,5 +25,11 @@ public class PratoService {
         return pratoRepository
                 .list("#Prato.getByRestauranteId", restaurante_id)
                 .map(pratoMapper::toDTOList);
+    }
+
+    public Uni<PratoDTO> findById(Long prato_id) {
+        return pratoRepository
+                .findById(prato_id)
+                .map(pratoMapper::toDTO);
     }
 }
