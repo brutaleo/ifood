@@ -33,14 +33,6 @@ public class Prato extends PanacheEntityBase {
     @JoinColumn(name = "restaurante_id")
     public Restaurante restaurante;
 
-    @ManyToOne
-    @JoinColumn(name = "carrinho_id")
-    public Carrinho carrinho;
-
-    public Carrinho getCarrinho() {
-        return carrinho;
-    }
-
     public Restaurante getRestaurante() {
         return restaurante;
     }

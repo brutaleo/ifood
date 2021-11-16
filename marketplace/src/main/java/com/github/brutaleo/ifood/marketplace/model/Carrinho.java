@@ -8,9 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Collection;
 
 @Entity
 @Table(name = "carrinho")
@@ -24,8 +22,7 @@ public class Carrinho extends PanacheEntityBase {
 
     public String cliente;
 
-    @OneToMany(mappedBy = "carrinho")
-    private Collection<Prato> prato;
+    public Long prato;
 
     public Long getId() {
         return id;
@@ -35,11 +32,4 @@ public class Carrinho extends PanacheEntityBase {
         this.id = id;
     }
 
-    public Collection<Prato> getPrato() {
-        return prato;
-    }
-
-    public void setPrato(Collection<Prato> prato) {
-        this.prato = prato;
-    }
 }

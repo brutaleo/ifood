@@ -32,14 +32,6 @@ public class Restaurante extends PanacheEntityBase {
     @OneToMany(mappedBy = "restaurante")
     private Collection<Prato> prato;
 
-    public Collection<Prato> getPrato() {
-        return prato;
-    }
-
-    public void setPrato(Collection<Prato> prato) {
-        this.prato = prato;
-    }
-
     public Localizacao getLocalizacao() {
         return localizacao;
     }

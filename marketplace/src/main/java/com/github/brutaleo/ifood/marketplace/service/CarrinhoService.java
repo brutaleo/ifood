@@ -2,17 +2,17 @@ package com.github.brutaleo.ifood.marketplace.service;
 
 import com.github.brutaleo.ifood.marketplace.dto.CarrinhoDTO;
 import com.github.brutaleo.ifood.marketplace.dto.CarrinhoMapper;
-import com.github.brutaleo.ifood.marketplace.dto.PratoDTO;
 import com.github.brutaleo.ifood.marketplace.model.Carrinho;
-import com.github.brutaleo.ifood.marketplace.model.Prato;
 import com.github.brutaleo.ifood.marketplace.repository.CarrinhoRepository;
 import io.smallrye.mutiny.Uni;
-import org.hibernate.reactive.mutiny.Mutiny;
+import io.vertx.mutiny.pgclient.PgPool;
+import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.Tuple;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @ApplicationScoped
 public class CarrinhoService {
@@ -20,8 +20,6 @@ public class CarrinhoService {
     CarrinhoRepository carrinhoRepository;
     @Inject
     CarrinhoMapper carrinhoMapper;
-    @Inject
-    PratoService pratoService;
 
     public Uni<List<CarrinhoDTO>> findByCliente(String cliente) {
         return carrinhoRepository
@@ -35,12 +33,43 @@ public class CarrinhoService {
                 .map(carrinhoMapper::toDTO);
     }
 
-    public Uni<Carrinho> adicionaPratoAoCarrinho(Long carrino_id, Long prato_id) {
-        Uni<CarrinhoDTO> carrinho = findById(carrino_id);
-        Uni<PratoDTO> prato = pratoService.findById(prato_id);
+    public Uni<String> salvarPratoNoCarrinho(PgPool client, String cliente, Long prato) {
+        return client
+                .preparedQuery(
+                        "INSERT INTO carrinho (cliente, prato) VALUES ($1, $2) RETURNING (cliente)")
+                .execute(
+                        Tuple.of(cliente, prato)
+                ).map(
+                        pgRowSet -> pgRowSet
+                        .iterator()
+                        .next()
+                        .getString("cliente")
+                );
+    }
 
+    public Uni<List<Carrinho>> buscarCarrinho(PgPool client, String cliente) {
+        return client
+                .preparedQuery("SELECT * FROM carrinho WHERE cliente = $1 ")
+                .execute(
+                        Tuple.of(cliente)
+                ).map(
+                        pgRowSet -> {
+                            List<Carrinho> list = new ArrayList<>(pgRowSet.size());
+                    for (Row row : pgRowSet) {
+                        list.add(carrinhoMapper.toPratoCarrinho(row));
+                    }
+                    return list;
+                });
+    }
 
-        return null;
+    public Uni<Boolean> deletarCarrinho(PgPool client, String cliente) {
+        return client
+                .preparedQuery("DELETE FROM carrinho WHERE cliente = $1")
+                .execute(
+                        Tuple.of(cliente)
+                ).map(
+                        pgRowSet -> pgRowSet.rowCount() == 1
+                );
     }
 
 }

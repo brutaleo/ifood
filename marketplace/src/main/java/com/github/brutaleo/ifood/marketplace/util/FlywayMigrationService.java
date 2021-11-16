@@ -16,8 +16,14 @@ public class FlywayMigrationService {
     String datasourceUsername;
     @ConfigProperty(name = "quarkus.datasource.password")
     String datasourcePassword;
+
     public void runFlywayMigration(@Observes StartupEvent event) {
-        Flyway flyway = Flyway.configure().dataSource("jdbc:" + datasourceUrl, datasourceUsername, datasourcePassword).load();
+        Flyway flyway =
+                Flyway
+                        .configure()
+                        .dataSource(
+                                "jdbc:" + datasourceUrl, datasourceUsername, datasourcePassword
+                        ).load();
         flyway.migrate();
     }
 }

@@ -1,13 +1,10 @@
 package com.github.brutaleo.ifood.marketplace.resource;
 
 import com.github.brutaleo.ifood.marketplace.dto.CarrinhoDTO;
-import com.github.brutaleo.ifood.marketplace.dto.CarrinhoMapper;
-import com.github.brutaleo.ifood.marketplace.dto.PratoMapper;
 import com.github.brutaleo.ifood.marketplace.model.Carrinho;
-import com.github.brutaleo.ifood.marketplace.model.Prato;
 import com.github.brutaleo.ifood.marketplace.service.CarrinhoService;
-import com.github.brutaleo.ifood.marketplace.service.PratoService;
 import io.smallrye.mutiny.Uni;
+import io.vertx.mutiny.pgclient.PgPool;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -15,7 +12,6 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,9 +31,7 @@ public class CarrinhoResource {
     @Inject
     CarrinhoService carrinhoService;
     @Inject
-    CarrinhoMapper carrinhoMapper;
-    @Inject
-    PratoMapper pratoMapper;
+    PgPool client;
 
     @APIResponse(
             responseCode = "200",
@@ -58,10 +52,18 @@ public class CarrinhoResource {
     }
 
     @POST
-    @Path("{prato_id}/pratos")
-    @Transactional
-    public Uni<Response> adicionaPratonoCarrinho(@PathParam("prato_id") Long prato_id, CarrinhoDTO dto) {
+    @Path("{prato_id}")
+    public Uni<String> adicionaPratoAoCarrinho(@PathParam("prato_id") Long prato_id) {
 
-        return null;
+        Carrinho carrinho = new Carrinho();
+        carrinho.cliente = CLIENTE;
+        carrinho.prato = prato_id;
+
+        return carrinhoService
+                .salvarPratoNoCarrinho(
+                        client,
+                        CLIENTE,
+                        prato_id
+                );
     }
 }
