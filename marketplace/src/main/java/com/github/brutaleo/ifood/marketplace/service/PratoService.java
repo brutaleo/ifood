@@ -21,7 +21,6 @@ public class PratoService {
     }
 
     public Uni<List<PratoDTO>> findByRestaurante(Long restaurante_id) {
-
         return pratoRepository
                 .list("#Prato.getByRestauranteId", restaurante_id)
                 .map(pratoMapper::toDTOList);

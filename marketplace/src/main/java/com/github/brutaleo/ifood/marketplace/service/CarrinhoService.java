@@ -27,7 +27,7 @@ public class CarrinhoService {
                 .map(carrinhoMapper::toDTOList);
     }
 
-    private Uni<CarrinhoDTO> findById(Long carrino_id) {
+    public Uni<CarrinhoDTO> findById(Long carrino_id) {
         return carrinhoRepository
                 .findById(carrino_id)
                 .map(carrinhoMapper::toDTO);

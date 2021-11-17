@@ -1,14 +1,21 @@
 package com.github.brutaleo.ifood.marketplace.resource;
 
 import com.github.brutaleo.ifood.marketplace.dto.CarrinhoDTO;
+import com.github.brutaleo.ifood.marketplace.dto.PedidoRealizadoDTO;
+import com.github.brutaleo.ifood.marketplace.dto.PratoDTO;
+import com.github.brutaleo.ifood.marketplace.dto.PratoPedidoDTO;
+import com.github.brutaleo.ifood.marketplace.dto.RestauranteDTO;
 import com.github.brutaleo.ifood.marketplace.model.Carrinho;
 import com.github.brutaleo.ifood.marketplace.service.CarrinhoService;
+import com.github.brutaleo.ifood.marketplace.service.PratoService;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,6 +27,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/pratos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,7 +40,12 @@ public class CarrinhoResource {
     @Inject
     CarrinhoService carrinhoService;
     @Inject
+    PratoService pratoService;
+    @Inject
     PgPool client;
+    @Inject
+    @Channel("pedidos")
+    Emitter<PedidoRealizadoDTO> emitterPedido;
 
     @APIResponse(
             responseCode = "200",
@@ -66,4 +80,45 @@ public class CarrinhoResource {
                         prato_id
                 );
     }
+
+    @POST
+    @Path("/realizar-pedido")
+    public Uni<Boolean> finalizarPedido() {
+        PedidoRealizadoDTO pedido = new PedidoRealizadoDTO();
+        String cliente  = CLIENTE;
+        pedido.cliente = cliente;
+
+        List<Carrinho> carrinho = carrinhoService
+                .buscarCarrinho(client, cliente)
+                .await()
+                .indefinitely();
+
+        List<PratoPedidoDTO>
+                pratos = carrinho
+                .stream()
+                .map(
+                        pratoCarrinho -> from(pratoCarrinho)
+                ).collect(
+                        Collectors.toList()
+                );
+
+        pedido.pratos = pratos;
+
+        RestauranteDTO restaurante = new RestauranteDTO();
+        restaurante.nome = "Nome restaurante";
+        pedido.restaurante = restaurante;
+        emitterPedido.send(pedido);
+
+        return carrinhoService.deletarCarrinho(client, cliente);
+    }
+
+    private PratoPedidoDTO from(Carrinho pratoCarrinho) {
+        PratoDTO dto = pratoService
+                .findById(pratoCarrinho.getId())
+                .await()
+                .indefinitely();
+        return new PratoPedidoDTO(dto.nome, dto.descricao, dto.preco);
+    }
+
+
 }
