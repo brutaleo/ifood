@@ -19,6 +19,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,11 +27,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Path("/pratos")
+@Path("/carrinhos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @ApplicationScoped
@@ -57,16 +57,13 @@ public class CarrinhoResource {
     )
     @GET
     @Path("{cliente}")
-    public Uni<Response> listarCarrinhosPorCliente(@PathParam("cliente") String cliente) {
+    public Uni<List<Carrinho>> listarCarrinhosPorCliente(@PathParam("cliente") String cliente) {
         return carrinhoService
-                .findByCliente(cliente)
-                .map(carrinhoPorCliente ->
-                        Response.ok(carrinhoPorCliente).build()
-                );
+                .buscarCarrinhoPorCliente(client, cliente);
     }
 
     @POST
-    @Path("{prato_id}")
+    @Path("adiciona/{prato_id}")
     public Uni<String> adicionaPratoAoCarrinho(@PathParam("prato_id") Long prato_id) {
 
         Carrinho carrinho = new Carrinho();
@@ -82,6 +79,7 @@ public class CarrinhoResource {
     }
 
     @POST
+    @Transactional
     @Path("/realizar-pedido")
     public Uni<Boolean> finalizarPedido() {
         PedidoRealizadoDTO pedido = new PedidoRealizadoDTO();
@@ -89,7 +87,7 @@ public class CarrinhoResource {
         pedido.cliente = cliente;
 
         List<Carrinho> carrinho = carrinhoService
-                .buscarCarrinho(client, cliente)
+                .buscarCarrinhoPorCliente(client, cliente)
                 .await()
                 .indefinitely();
 
@@ -97,9 +95,8 @@ public class CarrinhoResource {
                 pratos = carrinho
                 .stream()
                 .map(
-                        pratoCarrinho -> from(pratoCarrinho)
-                ).collect(
-                        Collectors.toList()
+                        pratoCarrinho -> from(pratoCarrinho))
+                .collect(Collectors.toList()
                 );
 
         pedido.pratos = pratos;
@@ -107,18 +104,19 @@ public class CarrinhoResource {
         RestauranteDTO restaurante = new RestauranteDTO();
         restaurante.nome = "Nome restaurante";
         pedido.restaurante = restaurante;
+
         emitterPedido.send(pedido);
 
         return carrinhoService.deletarCarrinho(client, cliente);
     }
 
-    private PratoPedidoDTO from(Carrinho pratoCarrinho) {
+    private PratoPedidoDTO from(Carrinho carrinho) {
         PratoDTO dto = pratoService
-                .findById(pratoCarrinho.getId())
+                .findById(client, carrinho.prato)
                 .await()
                 .indefinitely();
+
         return new PratoPedidoDTO(dto.nome, dto.descricao, dto.preco);
     }
-
 
 }

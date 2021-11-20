@@ -1,6 +1,5 @@
 package com.github.brutaleo.ifood.marketplace.service;
 
-import com.github.brutaleo.ifood.marketplace.dto.CarrinhoDTO;
 import com.github.brutaleo.ifood.marketplace.dto.CarrinhoMapper;
 import com.github.brutaleo.ifood.marketplace.model.Carrinho;
 import com.github.brutaleo.ifood.marketplace.repository.CarrinhoRepository;
@@ -21,18 +20,6 @@ public class CarrinhoService {
     @Inject
     CarrinhoMapper carrinhoMapper;
 
-    public Uni<List<CarrinhoDTO>> findByCliente(String cliente) {
-        return carrinhoRepository
-                .list("#Carrinho.getByCliente", cliente)
-                .map(carrinhoMapper::toDTOList);
-    }
-
-    public Uni<CarrinhoDTO> findById(Long carrino_id) {
-        return carrinhoRepository
-                .findById(carrino_id)
-                .map(carrinhoMapper::toDTO);
-    }
-
     public Uni<String> salvarPratoNoCarrinho(PgPool client, String cliente, Long prato) {
         return client
                 .preparedQuery(
@@ -47,13 +34,12 @@ public class CarrinhoService {
                 );
     }
 
-    public Uni<List<Carrinho>> buscarCarrinho(PgPool client, String cliente) {
+    public Uni<List<Carrinho>> buscarCarrinhoPorCliente(PgPool client, String cliente) {
         return client
                 .preparedQuery("SELECT * FROM carrinho WHERE cliente = $1 ")
                 .execute(
                         Tuple.of(cliente)
-                ).map(
-                        pgRowSet -> {
+                ).map(pgRowSet -> {
                             List<Carrinho> list = new ArrayList<>(pgRowSet.size());
                     for (Row row : pgRowSet) {
                         list.add(carrinhoMapper.toPratoCarrinho(row));
