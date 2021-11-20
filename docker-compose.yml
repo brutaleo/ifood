@@ -109,7 +109,7 @@ services:
       MONGO_INITDB_DATABASE: pedido
 
   zookepper:
-    image: debezium/zookeeper:1.7.0.Final
+    image: debezium/zookeeper:1.1
     container_name: zookepper_container
     ports:
       - "2181:8181"
@@ -117,7 +117,7 @@ services:
       - "3888:3888"
 
   kafka:
-    image: debezium/kafka:1.7.0.Final
+    image: debezium/kafka:1.1
     container_name: kafka_container
     ports:
       - "9092:9092"
@@ -127,7 +127,7 @@ services:
       - ZOOKEEPER_CONNECT=zookepper:2181
 
   kafdrop:
-    image: obsidiandynamics/kafdrop:3.28.0-SNAPSHOT
+    image: obsidiandynamics/kafdrop:3.24.0
     container_name: kafdrop_container
     environment:
       KAFKA_BROKERCONNECT: kafka:9092

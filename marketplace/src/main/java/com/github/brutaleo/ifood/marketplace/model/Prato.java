@@ -33,7 +33,6 @@ public class Prato extends PanacheEntityBase {
     @JoinColumn(name = "restaurante_id")
     public Restaurante restaurante;
 
-
     public Restaurante getRestaurante() {
         return restaurante;
     }

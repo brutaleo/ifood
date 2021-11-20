@@ -10,8 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Collection;
 
 @Entity
 @Table(name = "restaurante")
@@ -26,6 +28,9 @@ public class Restaurante extends PanacheEntityBase {
     @OneToOne
     @JoinColumn(name = "localizacao_id")
     public Localizacao localizacao;
+
+    @OneToMany(mappedBy = "restaurante")
+    private Collection<Prato> prato;
 
     public Localizacao getLocalizacao() {
         return localizacao;
@@ -65,7 +70,6 @@ public class Restaurante extends PanacheEntityBase {
                         ))
                 .await()
                 .indefinitely();
-
     }
 
     @Override
