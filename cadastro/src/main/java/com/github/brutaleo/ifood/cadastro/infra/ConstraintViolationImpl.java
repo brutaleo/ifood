@@ -33,14 +33,15 @@ public class ConstraintViolationImpl implements Serializable {
         return new ConstraintViolationImpl(violation);
     }
 
-    public static  ConstraintViolationImpl of (String violation) {
+    public static ConstraintViolationImpl of(String violation) {
         return new ConstraintViolationImpl(null, violation);
     }
 
     public String getMensagem() {
         return mensagem;
     }
-    public String getAtributo () {
+
+    public String getAtributo() {
         return atributo;
     }
 

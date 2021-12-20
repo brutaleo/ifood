@@ -19,5 +19,5 @@ INSERT INTO prato
 VALUES (2, 'Peixinho frito com açai', 'Deixa a barrigunha muito mais feliz', 1, 19.99);
 
 INSERT INTO prato
-(id, nome, descricao, restaurante_id, preco)
+    (id, nome, descricao, restaurante_id, preco)
 VALUES (3, 'Litro do Açai', 'O açai mais grosso do Guamá', 2, 12.99);

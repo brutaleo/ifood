@@ -76,7 +76,7 @@ public class RestauranteResource {
     Emitter<String> emitter;
 
     @GET
-    @Counted(name= "Quantidade buscas Restaurantes", description = "Quantos métodos get estão sendo acionados.")
+    @Counted(name = "Quantidade buscas Restaurantes", description = "Quantos métodos get estão sendo acionados.")
     @SimplyTimed(name = "Tempo medio de execuções", unit = MetricUnits.MILLISECONDS)
     @Timed(name = "Tempo completo de busca", description = "Quanto tempo leva para realizar uma tarefa.", unit = MetricUnits.MILLISECONDS)
     public List<RestauranteDTO> listarRestaurante() {
@@ -125,6 +125,7 @@ public class RestauranteResource {
                     throw new NotFoundException("Restaurante não encontrado.");
                 });
     }
+
     //Endpoints de Prato
     @GET
     @Path("{restaurante_id}/pratos")

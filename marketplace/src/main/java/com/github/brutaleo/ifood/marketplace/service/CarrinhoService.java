@@ -28,10 +28,10 @@ public class CarrinhoService {
                         Tuple.of(cliente, prato)
                 ).map(
                         pgRowSet -> pgRowSet
-                        .iterator()
-                        .next()
-                        .getString("cliente")
-                );
+                                .iterator()
+                                .next()
+                                .getString("cliente")
+                 );
     }
 
     public Uni<List<Carrinho>> buscarCarrinhoPorCliente(PgPool client, String cliente) {
@@ -40,7 +40,7 @@ public class CarrinhoService {
                 .execute(
                         Tuple.of(cliente)
                 ).map(pgRowSet -> {
-                            List<Carrinho> list = new ArrayList<>(pgRowSet.size());
+                    List<Carrinho> list = new ArrayList<>(pgRowSet.size());
                     for (Row row : pgRowSet) {
                         list.add(carrinhoMapper.toPratoCarrinho(row));
                     }

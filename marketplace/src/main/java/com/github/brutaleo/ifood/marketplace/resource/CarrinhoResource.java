@@ -83,7 +83,7 @@ public class CarrinhoResource {
     @Path("/realizar-pedido")
     public Uni<Boolean> finalizarPedido() {
         PedidoRealizadoDTO pedido = new PedidoRealizadoDTO();
-        String cliente  = CLIENTE;
+        String cliente = CLIENTE;
         pedido.cliente = cliente;
 
         List<Carrinho> carrinho = carrinhoService
@@ -91,8 +91,7 @@ public class CarrinhoResource {
                 .await()
                 .indefinitely();
 
-        List<PratoPedidoDTO>
-                pratos = carrinho
+        List<PratoPedidoDTO> pratos = carrinho
                 .stream()
                 .map(
                         pratoCarrinho -> from(pratoCarrinho))
