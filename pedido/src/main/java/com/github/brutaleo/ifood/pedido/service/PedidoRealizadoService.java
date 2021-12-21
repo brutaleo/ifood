@@ -18,6 +18,7 @@ public class PedidoRealizadoService {
     public void recebePedidos(PedidoRealizadoDTO dto) {
         System.out.println("------------------");
         System.out.println(dto);
+        System.out.println("------------------");
 
         Pedido pedido = new Pedido();
         pedido.cliente = dto.cliente;
