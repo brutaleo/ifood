@@ -15,6 +15,7 @@ public class FlywayMigrationService {
     String datasourceUsername;
     @ConfigProperty(name = "quarkus.datasource.password")
     String datasourcePassword;
+
     public void runFlywayMigration(@Observes StartupEvent event) {
         Flyway flyway = Flyway.configure().dataSource(datasourceUrl, datasourceUsername, datasourcePassword).load();
         flyway.migrate();

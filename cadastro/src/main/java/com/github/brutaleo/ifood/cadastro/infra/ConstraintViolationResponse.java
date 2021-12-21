@@ -12,7 +12,7 @@ public class ConstraintViolationResponse {
         exception.getConstraintViolations().forEach(violation -> violacoes.add(ConstraintViolationImpl.of(violation)));
     }
 
-    public static ConstraintViolationResponse of (ConstraintViolationException exception) {
+    public static ConstraintViolationResponse of(ConstraintViolationException exception) {
         return new ConstraintViolationResponse(exception);
     }
 

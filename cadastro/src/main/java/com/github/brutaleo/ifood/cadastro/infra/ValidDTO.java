@@ -8,9 +8,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = { ValidDTOValidator.class })
+@Constraint(validatedBy = {ValidDTOValidator.class})
 @Documented
 public @interface ValidDTO {
     String message() default "{com.github.brutaleo.ifood.cadastro.infra.ValidDTO.message}";
