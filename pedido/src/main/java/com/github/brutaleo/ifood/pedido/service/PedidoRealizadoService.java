@@ -9,10 +9,15 @@ import org.bson.types.Decimal128;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.json.bind.JsonbBuilder;
 import java.util.ArrayList;
 
 @ApplicationScoped
 public class PedidoRealizadoService {
+
+    @Inject
+    ElasticSearchService elasticSearchService;
 
     @Incoming("pedidos")
     public void recebePedidos(PedidoRealizadoDTO dto) {
@@ -28,6 +33,10 @@ public class PedidoRealizadoService {
         Restaurante restaurante = new Restaurante();
         restaurante.nome = dto.restaurante.nome;
         pedido.restaurante = restaurante;
+
+        String json = JsonbBuilder.create().toJson(dto);
+        elasticSearchService.index("pedidos", json);
+
         pedido.persist();
 
     }

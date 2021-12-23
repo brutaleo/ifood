@@ -5,6 +5,8 @@ volumes:
     driver: local
   grafana-data:
     driver: local
+  elasticsearch-data:
+    driver: local
 networks:
   public:
     driver: bridge
@@ -70,7 +72,7 @@ services:
     volumes:
       #      - /etc/prometheus:/config
       - prometheus-data:/prometheus
-    #    command: --config.file=/config/prometheus.yml
+    #command: --config.file=/config/prometheus.yml
     ports:
       - "9090:9090"
     restart: always
@@ -101,14 +103,14 @@ services:
   mongodb_ifood:
     image: mongo:5.0.3-focal
     container_name: mongodb_ifood
-
+    networks:
+      - db
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: pedido
       MONGO_INITDB_ROOT_PASSWORD: pedido
       MONGO_INITDB_DATABASE: pedido
-
 
   zookepper:
     image: debezium/zookeeper:1.7.0.Final
@@ -138,3 +140,42 @@ services:
       - "9000:9000"
     depends_on:
       - kafka
+
+  elastic:
+    container_name: elasticsearch_ifood
+    image: elasticsearch:7.6.2
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=elasticsearch
+#      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+#      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+#    volumes:
+#    - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+    - public
+
+  kibana:
+    container_name: kibana_ifood
+    image: kibana-ifood
+    environment:
+#      ELASTICSEARCH_URL: https://elasticsearch_ifood:9200
+      ELASTICSEARCH_HOSTS: '["http://host.docker.internal:9200"]'
+#      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "EePXCifCaykPORwjqKGbINHCPFYnNXZT"
+    ports:
+      - "5601:5601"
+#    depends_on:
+#      - elastic
+    networks:
+      - public
